@@ -1,0 +1,41 @@
+# GPU 프로파일 — 16GB (로컬 RTX 5060 Ti, Blackwell sm_120)
+#
+# 뼈대만이다. 값은 파일럿 후 확정한다 (CTO 브리프 §4-1).
+# 코드는 이 파일을 읽을 뿐 GPU 사양을 가정하지 않는다. 48gb.yaml 과 키 집합이 완전히 같아야 한다.
+# 실측 근거: scripts/check_env.py — torch 2.11.0+cu128 / sm_120 / 15.9 GiB / bf16 autocast 정상.
+
+profile: "16gb"
+device: cuda
+
+hardware:
+  name: "NVIDIA GeForce RTX 5060 Ti"
+  vram_gib: 16
+  compute_capability: "12.0"     # sm_120 → cu128 이상 필수. cu121 계열 휠은 동작하지 않는다.
+  driver: "581.08"
+
+precision:
+  amp_dtype: bf16                # Blackwell 은 bf16 네이티브. fp16 로 내리지 않는다.
+  matmul_tf32: true
+  # 결정론 설정은 base.yaml 의 seed 절에서 관리한다 (cudnn.deterministic).
+
+detection:                       # YOLO11s — 트랙 C 소비
+  batch: null                    # TODO 파일럿
+  imgsz: 640
+  workers: null                  # TODO 파일럿 (Windows 는 spawn 이라 과다 설정 시 역효과)
+  amp: true
+
+vlm:                             # Qwen 계열 QLoRA — 트랙 C 소비
+  load_in_4bit: true
+  per_device_batch: null         # TODO 파일럿
+  grad_accum: null               # TODO 파일럿. per_device_batch * grad_accum 이 유효 배치
+  gradient_checkpointing: true
+  max_seq_len_qa: 1024
+  max_seq_len_reason: 2048
+
+fl:                              # Flower 시뮬레이션 — 트랙 C 소비
+  detection_concurrency: null    # TODO 파일럿. Ray num_gpus 지분으로 환산
+  vlm_concurrency: 1             # VLM 은 클라이언트 하나가 GPU 를 다 쓴다. 순차 실행 고정.
+
+serving:                         # 합성 생성(트랙 B) / 평가 추론(트랙 D)
+  vllm_gpu_memory_utilization: null   # TODO
+  vllm_max_model_len: null            # TODO

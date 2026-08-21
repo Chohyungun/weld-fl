@@ -1,0 +1,303 @@
+{
+  "$defs": {
+    "Defect": {
+      "additionalProperties": false,
+      "description": "결함 인스턴스 1개. `retrieved` 가 여기 있는 이유는 §2-2에 있다 — 검색 질의가\n결함코드마다 따로 나가므로 조항 검색 지표의 단위가 (이미지 × 결함코드) 쌍이다.",
+      "properties": {
+        "iso_code": {
+          "minLength": 1,
+          "title": "Iso Code",
+          "type": "string"
+        },
+        "bbox_px": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bbox Px"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "size_mm": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Mm"
+        },
+        "size_px": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Px"
+        },
+        "size_basis": {
+          "anyOf": [
+            {
+              "enum": [
+                "major_axis",
+                "equiv_diameter"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Basis"
+        },
+        "retrieved": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 3,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved"
+        }
+      },
+      "required": [
+        "iso_code"
+      ],
+      "title": "Defect",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "이미지 1장 = 1레코드. jsonl 한 줄에 대응한다.",
+  "properties": {
+    "schema_version": {
+      "const": "1.3",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "image_id": {
+      "minLength": 1,
+      "title": "Image Id",
+      "type": "string"
+    },
+    "cell": {
+      "enum": [
+        "uni_central",
+        "uni_fed",
+        "sep_local",
+        "sep_central",
+        "sep_fed"
+      ],
+      "title": "Cell",
+      "type": "string"
+    },
+    "client": {
+      "anyOf": [
+        {
+          "enum": [
+            "C1",
+            "C2",
+            "C3"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Client"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    },
+    "defects": {
+      "items": {
+        "$ref": "#/$defs/Defect"
+      },
+      "title": "Defects",
+      "type": "array"
+    },
+    "verdict": {
+      "enum": [
+        "합격",
+        "불합격",
+        "판정불가"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    },
+    "cited_clauses": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Cited Clauses",
+      "type": "array"
+    },
+    "assumed_thickness_mm": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Assumed Thickness Mm"
+    },
+    "assumed_quality_level": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Assumed Quality Level"
+    },
+    "parse_ok": {
+      "title": "Parse Ok",
+      "type": "boolean"
+    },
+    "parse_error": {
+      "anyOf": [
+        {
+          "enum": [
+            "no_json",
+            "json_decode",
+            "schema_violation",
+            "unknown_iso_code",
+            "bbox_invalid",
+            "join_missing",
+            "truncated"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parse Error"
+    },
+    "raw_output_ref": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Raw Output Ref"
+    },
+    "coord_space": {
+      "anyOf": [
+        {
+          "enum": [
+            "NORM_1000",
+            "ABS_RESIZED",
+            "ABS_ORIG"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Coord Space"
+    },
+    "coord_cfg_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Coord Cfg Hash"
+    },
+    "latency_ms": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latency Ms"
+    }
+  },
+  "required": [
+    "schema_version",
+    "image_id",
+    "cell",
+    "seed",
+    "defects",
+    "verdict",
+    "cited_clauses",
+    "parse_ok"
+  ],
+  "title": "weld-fl 공통 예측 레코드",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://weld-fl.local/evaluation/prediction.schema.json"
+}

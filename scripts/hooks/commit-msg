@@ -1,0 +1,18 @@
+#!/bin/sh
+# 커밋 메시지에서 AI 어시스턴트 트레일러를 제거한다.
+# worktree 5개(wt/A~wt/E)가 공용 .git/hooks 를 공유하므로 이 훅 하나가 전 트랙에 적용된다.
+# 목적: 저장소 이력에 도구 흔적을 남기지 않는다. 검토·판단 주체는 사람이다.
+MSG="$1"
+[ -f "$MSG" ] || exit 0
+TMP="$MSG.stripped"
+grep -v -E -i \
+  -e '^[[:space:]]*Co-[Aa]uthored-[Bb]y:.*(Claude|Anthropic|noreply@anthropic)' \
+  -e '^[[:space:]]*(🤖[[:space:]]*)?Generated with \[?Claude' \
+  -e '^[[:space:]]*Claude-Session:' \
+  -e '^[[:space:]]*https://claude\.ai/code/' \
+  -e '^[[:space:]]*Co-[Aa]uthored-[Bb]y:.*Claude Code' \
+  "$MSG" > "$TMP"
+# 끝의 빈 줄 정리
+awk 'BEGIN{n=0} {lines[NR]=$0} END{last=NR; while(last>0 && lines[last] ~ /^[[:space:]]*$/) last--; for(i=1;i<=last;i++) print lines[i]}' "$TMP" > "$MSG"
+rm -f "$TMP"
+exit 0

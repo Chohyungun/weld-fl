@@ -1,0 +1,34 @@
+case_id,defect_code,material,thickness_min,thickness_max,quality_scheme,quality_level,limit_type,limit_rule,limit_value,limit_factor,limit_cap,ratio_basis,limit_op,unit,t_mm,measured,expected_verdict,expected_margin,rationale
+G01,2011,ST,8,25,iso5817,C,직경,const,3,,,,le,mm,12,3.00,합격,0.00,L=3; le 등호: 3.00≤3 참 → 합격; margin=3-3.00=0.00
+G02,2011,ST,8,25,iso5817,C,직경,const,3,,,,le,mm,12,3.01,불합격,-0.01,경계 +0.01: 3.01≤3 거짓 → 불합격; margin=3-3.01=-0.01
+G03,2011,ST,8,25,iso5817,C,직경,const,3,,,,le,mm,12,2.99,합격,0.01,경계 -0.01: 2.99≤3 참 → 합격; margin=0.01
+G04,2011,ST,8,25,iso5817,C,직경,const,3,,,,le,mm,12,0.01,합격,2.99,깊은 합격역; margin=3-0.01=2.99
+G05,301,ST,8,25,iso5817,C,길이,const,3,,,,lt,mm,12,3.00,불합격,0.00,lt 등호: 3.00<3 거짓 → 불합격; margin=0.00 (lt는 margin>0 이어야 합격)
+G06,301,ST,8,25,iso5817,C,길이,const,3,,,,lt,mm,12,2.99,합격,0.01,lt: 2.99<3 참 → 합격; margin=0.01
+G07,301,ST,8,25,iso5817,C,길이,const,3,,,,lt,mm,12,3.01,불합격,-0.01,lt: 3.01<3 거짓 → 불합격; margin=-0.01
+G08,401,ST,8,25,iso5817,B,길이,prop_t,,0.1,,t,le,mm,12,1.20,합격,0.00,L=0.1×12=1.20; 1.20≤1.20 참; margin=0.00
+G09,401,ST,8,25,iso5817,B,길이,prop_t,,0.1,,t,le,mm,12,1.21,불합격,-0.01,L=1.20; 1.21≤1.20 거짓; margin=-0.01
+G10,401,ST,8,25,iso5817,B,길이,prop_t,,0.1,,t,le,mm,12.34,1.23,합격,0.00,L=0.1×12.34=1.234 → 0.01 양자화 1.23; margin=0.00
+G11,401,ST,8,25,iso5817,C,길이,prop_t,,0.25,,t,le,mm,8.10,2.02,합격,0.01,L=0.25×8.10=2.025 → ROUND_HALF_UP 2.03; 2.02≤2.03 참; margin=0.01
+G12,401,ST,8,25,iso5817,C,길이,prop_t,,0.25,,t,le,mm,8.10,2.03,합격,0.00,L=2.03 (HALF_UP); 등호 합격; margin=0.00
+G13,401,ST,8,25,iso5817,C,길이,prop_t,,0.25,,t,le,mm,8.10,2.04,불합격,-0.01,L=2.03; 2.04≤2.03 거짓; margin=-0.01
+G14,401,ST,12,40,iso5817,C,길이,prop_t_cap,,0.2,5,t,le,mm,20,4.00,합격,0.00,L=min(0.2×20=4.00; 5)=4.00; 등호 합격; margin=0.00
+G15,401,ST,12,40,iso5817,C,길이,prop_t_cap,,0.2,5,t,le,mm,20,4.01,불합격,-0.01,L=4.00; 4.01≤4.00 거짓; margin=-0.01
+G16,401,ST,12,40,iso5817,C,길이,prop_t_cap,,0.2,5,t,le,mm,30,5.00,합격,0.00,상한 지배: L=min(6.00; 5)=5.00; 등호 합격; margin=0.00
+G17,401,ST,12,40,iso5817,C,길이,prop_t_cap,,0.2,5,t,le,mm,30,5.01,불합격,-0.01,L=5.00 (cap); 5.01≤5.00 거짓; margin=-0.01
+G18,401,ST,12,40,iso5817,C,길이,prop_t_cap,,0.2,5,t,le,mm,25,4.99,합격,0.01,교차점 t*=cap/factor=25: 0.2×25=5.00=cap; L=5.00; margin=0.01
+G19,401,ST,12,40,iso5817,C,길이,prop_t_cap,,0.2,5,t,le,mm,24.99,5.00,합격,0.00,0.2×24.99=4.998 → 양자화 5.00; min(5.00; 5)=5.00; 등호 합격; margin=0.00
+G20,2012,ST,8,25,iso5817,C,비율,const,25,,,,le,percent,12,25.00,합격,0.00,비율형 동일 로직: 25.00≤25 참; margin=0.00
+G21,2012,ST,8,25,iso5817,C,비율,const,25,,,,le,percent,12,25.01,불합격,-0.01,25.01≤25 거짓; margin=-0.01
+G22,2012,AL,8,25,iacs,STD,비율,const,10,,,,lt,percent,12,10.00,불합격,0.00,비율형 lt 등호: 10.00<10 거짓 → 불합격; margin=0.00
+G23,2012,AL,8,25,iacs,STD,비율,const,10,,,,lt,percent,12,9.99,합격,0.01,lt: 9.99<10 참; margin=0.01
+G24,100,ST,8,25,iso5817,B,불허,none_permitted,,,,,le,,12,0.50,불합격,,불허: 결함 존재(0.50>0)=불합격; margin 없음(null)
+G25,100,ST,8,25,iso5817,B,불허,none_permitted,,,,,le,,12,15.00,불합격,,불허: 크기 무관 불합격; margin null
+G26,2011,ST,8,12,iso5817,C,직경,const,2,,,,le,mm,8,2.00,합격,0.00,구간 경계: t=min(8)은 반열림 [8;12) 포함; L=2; 등호 합격
+G27,2011,ST,8,12,iso5817,C,직경,const,2,,,,le,mm,11.99,2.50,불합격,-0.50,t=11.99 는 [8;12) 소속; L=2; 2.50≤2 거짓; margin=-0.50
+G28,2011,ST,8,12,iso5817,C,직경,const,2,,,,le,mm,12,,no_match,,t=max(12)는 반열림 규약상 다음 구간 — 이 행에서 선택 불가
+G29,2011,ST,12,25,iso5817,C,직경,const,3,,,,le,mm,12,2.50,합격,0.50,t=12 는 [12;25)의 min 포함; L=3; margin=0.50
+G30,2011,ST,8,,iso5817,C,직경,const,3,,,,le,mm,999.99,3.50,불합격,-0.50,thickness_max 공란=+∞; t=999.99 소속; L=3; margin=-0.50
+G31,2011,ST,8,25,iso5817,C,직경,const,3,,,,le,mm,12,3.005,불합격,-0.01,측정 3.005 → ROUND_HALF_UP 3.01; 3.01≤3 거짓; margin=-0.01
+G32,2011,ST,8,25,iso5817,C,직경,const,3,,,,le,mm,12,2.995,합격,0.00,측정 2.995 → ROUND_HALF_UP 3.00; 등호 합격; margin=0.00
+G33,100,AL,0,25,none,ALL,불허,none_permitted,,,,,le,,5,1.00,불합격,,무등급 단일 한계 스킴(none/ALL) 불허 행; 불합격; margin null

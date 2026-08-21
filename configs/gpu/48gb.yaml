@@ -1,0 +1,39 @@
+# GPU 프로파일 — 48GB (RunPod A40 급, 8/23 무상 확보 실패 시 유료 전환안)
+#
+# 뼈대만이다. 값은 파일럿 후 확정한다 (CTO 브리프 §4-1).
+# 16gb.yaml 과 키 집합이 완전히 같아야 한다. 키가 갈리면 "GPU 사양 비의존" 원칙이 깨진다.
+
+profile: "48gb"
+device: cuda
+
+hardware:
+  name: "NVIDIA A40 (예정)"
+  vram_gib: 48
+  compute_capability: "8.6"      # Ampere. cu128 휠은 sm_86 도 포함하므로 같은 잠금 파일로 동작한다.
+  driver: null                   # 확보 후 실측 기입
+
+precision:
+  amp_dtype: bf16
+  matmul_tf32: true
+
+detection:
+  batch: null                    # TODO 파일럿
+  imgsz: 640                     # 16gb 와 동일해야 한다 — 5칸 전처리 고정 조건
+  workers: null                  # TODO 파일럿
+  amp: true
+
+vlm:
+  load_in_4bit: true             # 프로파일 간 학습 조건이 갈리면 안 되므로 48GB 에서도 4bit 유지
+  per_device_batch: null         # TODO 파일럿
+  grad_accum: null               # TODO. 유효 배치는 16gb 프로파일과 **같은 값**이 되도록 맞춘다
+  gradient_checkpointing: true
+  max_seq_len_qa: 1024
+  max_seq_len_reason: 2048
+
+fl:
+  detection_concurrency: null    # TODO 파일럿
+  vlm_concurrency: 1             # 여유가 있어도 1 로 고정 — 프로파일 간 결과 동일성 확보
+
+serving:
+  vllm_gpu_memory_utilization: null
+  vllm_max_model_len: null

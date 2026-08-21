@@ -1,0 +1,809 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://weld-fl/data/registry/_schema/dataset_registry.schema.json",
+  "title": "데이터셋 등록부 (수집 단계 JSON 인덱스)",
+  "description": "수집 단계에서 사람이 손으로 채우는 유일한 파일. 계약 #2(manifest/annotations)로 한 방향으로만 흘러가며 런타임은 이 파일을 읽지 않는다. 계산 가능한 값(sha256·bbox·split 등)은 키 자체를 두지 않아 additionalProperties:false 가 침입을 막는다.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_schema_version",
+    "dataset_id",
+    "kind",
+    "authoring",
+    "provenance",
+    "constraints",
+    "acquisition",
+    "pipeline",
+    "counts_announced",
+    "samples"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "registry_schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "파일명과 일치해야 한다. kind=image 이고 eligible 이면 계약 #1 sources 키·어댑터 source 상수와 3중 일치."
+    },
+    "kind": {
+      "enum": [
+        "image",
+        "text_corpus",
+        "document"
+      ]
+    },
+    "authoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "written_at",
+        "review_status"
+      ],
+      "properties": {
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "written_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "reviewer": {
+          "type": "string"
+        },
+        "reviewed_at": {
+          "type": "string"
+        },
+        "review_status": {
+          "enum": [
+            "pending",
+            "reviewed",
+            "rejected"
+          ]
+        },
+        "basis": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publisher",
+        "landing_url",
+        "access_state",
+        "license",
+        "citation_required"
+      ],
+      "properties": {
+        "publisher": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "landing_url": {
+          "type": "string",
+          "pattern": "^https?://"
+        },
+        "edition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "retrieved_at": {
+              "type": "string"
+            }
+          }
+        },
+        "access": {
+          "type": "string"
+        },
+        "access_state": {
+          "enum": [
+            "in_hand",
+            "pending_approval",
+            "restricted",
+            "not_requested"
+          ],
+          "description": "실물 보유 여부. in_hand 가 아니면 필드 선언이 실물 근거를 가질 수 없다."
+        },
+        "license": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "spdx": {
+              "type": "string"
+            },
+            "commercial_use": {
+              "type": "string"
+            },
+            "commercial_use_status": {
+              "$ref": "#/$defs/status"
+            },
+            "evidence": {
+              "type": "string"
+            },
+            "evidence_level": {
+              "$ref": "#/$defs/evidence_level"
+            }
+          }
+        },
+        "citation_required": {
+          "type": "boolean"
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "export_restriction": {
+          "type": "string"
+        },
+        "redistribution": {
+          "type": "string"
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cloud_upload",
+        "external_commercial_api",
+        "commercial_use"
+      ],
+      "description": "보안 레드라인의 값화. 검증기가 직접 읽는다.",
+      "properties": {
+        "cloud_upload": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "const": "unverified"
+            }
+          ],
+          "description": "가부를 boolean 으로, 아직 모르면 \"unverified\"."
+        },
+        "external_commercial_api": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "const": "unverified"
+            }
+          ],
+          "description": "가부를 boolean 으로, 아직 모르면 \"unverified\"."
+        },
+        "commercial_use": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "const": "unverified"
+            }
+          ],
+          "description": "가부를 boolean 으로, 아직 모르면 \"unverified\"."
+        }
+      }
+    },
+    "acquisition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "staging_uri",
+        "storage_mode"
+      ],
+      "properties": {
+        "staging_uri": {
+          "type": "string",
+          "not": {
+            "pattern": "^[A-Za-z]:[\\\\/]"
+          },
+          "description": "논리 URI 만. 실제 절대경로는 configs/paths.local.yaml(비추적)에 둔다."
+        },
+        "staging_path_hint": {
+          "type": "string"
+        },
+        "storage_mode": {
+          "type": "string"
+        },
+        "obtained_at": {
+          "type": "string"
+        },
+        "archives": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "archives_note": {
+          "type": "string"
+        },
+        "extract_verified": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        }
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eligible",
+        "adapter_state"
+      ],
+      "properties": {
+        "eligible": {
+          "type": "boolean"
+        },
+        "exclusion_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_subdir": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dataset_subpath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "adapter": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "adapter_state": {
+          "enum": [
+            "ready",
+            "blocked",
+            "absent",
+            "planned"
+          ]
+        },
+        "mount_mode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "row_note": {
+          "type": "string"
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_glob",
+        "label_mode"
+      ],
+      "properties": {
+        "image_glob": {
+          "type": "string"
+        },
+        "class_dir_depth": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "class_dir_note": {
+          "type": "string"
+        },
+        "label_mode": {
+          "enum": [
+            "dirname",
+            "sidecar",
+            "embedded",
+            "none"
+          ]
+        },
+        "label_glob": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pairing_rule": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exclude_globs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pairing_verified": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "evidence_level": {
+          "$ref": "#/$defs/evidence_level"
+        }
+      }
+    },
+    "label_vocabulary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label_field",
+        "labels"
+      ],
+      "properties": {
+        "label_field": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "raw",
+              "is_normal"
+            ],
+            "properties": {
+              "raw": {
+                "type": "string",
+                "minLength": 1
+              },
+              "is_normal": {
+                "type": "boolean"
+              },
+              "proposed_l2": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[a-z][a-z0-9_]*$",
+                "description": "계약 #1 L2 키만. ISO 코드나 한글을 적으면 안 된다 — 한글은 raw 칸에 간다."
+              },
+              "count_announced": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "closed_set_verified": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "evidence_level": {
+          "$ref": "#/$defs/evidence_level"
+        },
+        "warning": {
+          "type": "string"
+        }
+      }
+    },
+    "fields_declared": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "기준 스키마 10키 폐집합. 데이터셋마다 키가 달라지면 비교가 안 되고, 안 적은 것과 없다고 적은 것이 섞인다.",
+      "required": [
+        "modality",
+        "material",
+        "label_type",
+        "defect_label",
+        "normal_label",
+        "coords",
+        "thickness_mm",
+        "px_per_mm",
+        "quality_level",
+        "group_key"
+      ],
+      "properties": {
+        "modality": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "material": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "label_type": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "defect_label": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "normal_label": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "coords": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "thickness_mm": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "px_per_mm": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "quality_level": {
+          "$ref": "#/$defs/field_decl"
+        },
+        "group_key": {
+          "$ref": "#/$defs/field_decl"
+        }
+      }
+    },
+    "counts_announced": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis",
+        "verified"
+      ],
+      "properties": {
+        "basis": {
+          "type": "string"
+        },
+        "verified": {
+          "const": false,
+          "description": "true 승격은 어댑터 실측 스크립트만 한다. 사람이 올릴 수 없다."
+        },
+        "images_total": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "per_class": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "author_split_note": {
+          "type": "string"
+        }
+      }
+    },
+    "samples": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "8/16 회의의 샘플 구조 — 이미지 / 정상·결함 클래스 / 조치 지침 텍스트.",
+      "required": [
+        "image",
+        "class",
+        "guidance_text"
+      ],
+      "properties": {
+        "image": {
+          "type": [
+            "object",
+            "string"
+          ]
+        },
+        "class": {
+          "type": [
+            "object",
+            "string"
+          ]
+        },
+        "guidance_text": {
+          "type": [
+            "object",
+            "string"
+          ]
+        },
+        "examples": {
+          "type": "array",
+          "maxItems": 5,
+          "description": "이미지 단위 인덱스로 번지는 것을 물리적으로 막는 캡.",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "text": {
+      "type": "object"
+    },
+    "document": {
+      "type": "object"
+    },
+    "probe_result": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "기계 실측 결과. 사람이 쓰지 않는다."
+    },
+    "open_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item",
+          "how_to_verify",
+          "owner",
+          "due"
+        ],
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "how_to_verify": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "due": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "grade": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "image"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "layout",
+          "label_vocabulary",
+          "fields_declared"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "status": {
+      "enum": [
+        "present",
+        "constant",
+        "absent",
+        "out_of_contract",
+        "not_applicable",
+        "unverified"
+      ]
+    },
+    "evidence_level": {
+      "enum": [
+        "full_scan",
+        "file_inspected",
+        "publisher_doc",
+        "inference",
+        "none"
+      ]
+    },
+    "field_decl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "source": {
+          "enum": [
+            "metadata_field",
+            "filename_pattern",
+            "dirname",
+            "absent"
+          ],
+          "description": "값이 어디서 나오는지. 이 축이 없으면 파일명 유래 묶음이 absent 로 잘못 적히고 E2 누수 방어선이 끊긴다."
+        },
+        "source_key": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "constant_value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "observed_value": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "values_seen_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "coverage": {
+          "type": "null",
+          "description": "사람은 전수를 세지 않았다. null 만 허용하고 실측치는 probe_result 에만 존재한다."
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "evidence_level": {
+          "$ref": "#/$defs/evidence_level"
+        },
+        "how_to_verify": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "due": {
+          "type": "string"
+        },
+        "pipeline_note": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "values_seen": {
+          "type": "array"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "constant"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "constant_value",
+              "evidence"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "absent"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "evidence",
+              "evidence_level"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "out_of_contract"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "observed_value",
+              "evidence"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "unverified"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "how_to_verify",
+              "owner",
+              "due"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "present"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "source_key",
+              "evidence"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

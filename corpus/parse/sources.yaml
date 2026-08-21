@@ -1,0 +1,104 @@
+# 문서 등록부 — 스펙 §3-1 (11_spec_B_코퍼스합성.md)
+# 파싱 착수 전 등록 필수. 미등록 문서 유래 행은 limits.csv 반입 금지.
+# license_class: OPEN | VIEW_ONLY | PAID | CITED_FACT
+# allowed_use: [table_extract, corpus_text, rag_index] 의 부분집합
+#   ※ OPEN 문서의 corpus_text·rag_index 는 콘텐츠 수준 스크린(§3-6) 통과분에 한함
+# canonical_priority: 교차 문서 충돌(V9) 정본 서열. 낮을수록 우선 (열린 질문 #2 기본값)
+
+meta:
+  updated: 2026-08-17
+  spec: docs/dev_log/2026-08-17-kickoff/11_spec_B_코퍼스합성.md#3-1
+  note: >
+    raw/ 원본 PDF는 재배포 조건 미확인으로 git 미추적 (.gitignore).
+    무결성은 아래 sha256 + corpus/parse/raw/RAW.sha256 으로 추적한다.
+
+canonical_priority_order: [KR-RULES-P2, IACS47, KS-ST, KS-AL]
+
+documents:
+  - doc_id: KR-RULES-P2
+    title: 2025 선급 및 강선규칙 / 적용지침 제2편 재료 및 용접 (합본)
+    publisher: 한국선급(KR)
+    edition_year: 2025
+    url: https://www.krs.co.kr/KRRules/KRRules2025/data/data_part/korean/2%ED%8E%B8_2025.pdf
+    access_date: 2026-08-17
+    license_class: OPEN            # 홈페이지 공개 PDF. 재배포 조건 미확인 → raw 미커밋
+    sha256: 46c4ee189f4adef29e42320f9301d8db577946ec96f893be9ff2f1683879552b
+    file_local: corpus/parse/raw/KR-RULES-P2_2025.pdf
+    allowed_use: [table_extract, corpus_text, rag_index]
+    canonical_priority: 1
+    initial_route: D               # Docling. 실패 시 P (스펙 §3-2 초기 배정)
+    status: acquired
+    notes: >
+      규칙+적용지침 합본 362쪽, 디지털 조판(스캔본 아님 — textscan 실측).
+      **부록 2-7 선체 용접이음부의 비파괴검사 기준 (p316~336) 이 RT 판정 주 원천**:
+      표면결함 합격기준(균열·융합부족 불허, 기공 d≤0.25t 최대 3mm, 필릿 d≤0.25a),
+      KS B 0845 계열 점수제(종별구분·결함점수·판정기준 t/5 포함) 재수록,
+      RT 내부결함은 ISO 10675-1 등급 1/2/3 위임 표 병존. 원문 조판에 ∠(부등호) 사용.
+
+  - doc_id: IACS47
+    title: "IACS Rec. No.47 Shipbuilding and Repair Quality Standard, Rev.10 Corr.1 (Oct 2025, CLN)"
+    publisher: IACS
+    edition_year: 2025
+    url: https://iacs.s3.af-south-1.amazonaws.com/wp-content/uploads/2025/10/20150153/Rec-47-Rev.10-Corr.1-Oct-2025-CLN.pdf
+    landing_page: https://iacs.org.uk/resolutions/recommendations/41-60/rec-47-rev10-cln
+    access_date: 2026-08-17
+    license_class: OPEN            # IACS 무료 공개 recommendation
+    sha256: ac54b7904b3f27d8af830ef2f4ff0ca18967a407aeead67c481b136b542f15a6
+    file_local: corpus/parse/raw/IACS47_Rev10Corr1_2025.pdf
+    allowed_use: [table_extract, corpus_text, rag_index]
+    canonical_priority: 2
+    initial_route: D
+    status: acquired
+    notes: 영문 디지털 조판 67쪽. 자체 Standard/Limit 2단 체계 → quality_scheme=iacs.
+
+  - doc_id: KS-ST
+    title: KS B 0845 강 용접 이음부의 방사선 투과 시험 방법 (등급 분류)
+    publisher: 국가기술표준원 (e나라표준인증)
+    edition_year: null             # 열람 시 확정
+    url: null                      # 열람 창구: standard.go.kr (다운로드 제약 전제)
+    access_date: null
+    license_class: VIEW_ONLY
+    sha256: null                   # 파일 미보유 — 수기 전사 경로 (스펙 §3-2 경로 M)
+    allowed_use: [table_extract]   # 수기 전사 한정. 원문 텍스트 반입 불가, 재서술만
+    canonical_priority: 3
+    initial_route: M
+    status: pending                # W2 열람 예정
+    notes: 강재 RT 등급(류) 기준의 국문 근거. quality_scheme=ks.
+
+  - doc_id: KS-AL
+    title: KS B 0894 등 알루미늄 용접부 방사선 투과 시험 계열 (해당 규격 열람 후 확정)
+    publisher: 국가기술표준원 (e나라표준인증)
+    edition_year: null
+    url: null
+    access_date: null
+    license_class: VIEW_ONLY
+    sha256: null
+    allowed_use: [table_extract]
+    canonical_priority: 4
+    initial_route: M
+    status: pending
+    notes: C3(알루미늄) 허용치 근거 후보. IACS47·KR 알루미늄 조항 우선 탐색 후 공백 보완용 (스펙 §3-7).
+
+  # --- QA 코퍼스 원문 (표 추출 대상 아님) ---
+  - doc_id: KCI-JWJ
+    title: 대한용접·접합학회지 (Journal of Welding and Joining) 논문 선집
+    publisher: 대한용접접합학회 / KCI
+    edition_year: null             # 논문별 상이 — 수집 시 논문 단위 하위 등록
+    url: https://www.e-jwj.org
+    access_date: null
+    license_class: OPEN
+    sha256: null                   # 논문별 개별 기록 (하위 등록 시)
+    allowed_use: [corpus_text]     # (b) QA 원문 전용. 표 추출 대상 아님
+    canonical_priority: null
+    initial_route: D
+    status: pending                # W2 수집. 스캔본은 폐기·대체 논문 선택
+    notes: 콘텐츠 수준 스크린 필수 — 유료 표준 전재·블록 인용 청크 반입 제외 (§3-6).
+
+  # --- 사실 정보 (파일 아님) ---
+  - doc_id: ISO6520-1
+    title: ISO 6520-1 용접 결함 분류 코드 체계 (코드 번호·명칭)
+    publisher: ISO
+    license_class: CITED_FACT
+    allowed_use: []                # 라벨 온톨로지로만 사용. 원문 미보유·미추출
+    status: reference-only
+    notes: 코드·명칭은 사실 정보. 계약 #1 label_map.yaml 이 소비.

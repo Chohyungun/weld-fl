@@ -1,0 +1,94 @@
+# 계약 #1 — 라벨 사상표 (원본 라벨 ↔ ISO 6520-1)
+#
+# 소유 트랙 A · 소비 B·C·D. CTO 게이트 #4 에서 얼렸다. 컬럼·키 변경은 CTO 승인 사항.
+# 명세: docs/dev_log/2026-08-17-kickoff/10_spec_A_데이터파이프라인.md §1
+#
+# 계층 4단 분리 — 이 순서를 섞지 않는다.
+#   L1 verdict_levels : 판정 수준(정상/불량). 이미지 수준 속성이고 ISO 코드가 없다.
+#   L2 defect_types   : 결함 유형 온톨로지. 단일 진실. 다른 계층은 이 키를 참조만 한다.
+#   L3 sources        : 데이터셋 원본 라벨 문자열 → L2 키
+#   L4 eval_spaces    : 평가 시나리오별 라벨 공간 축소
+#
+# **"정상"은 L2 에 없다.** 정상 = has_defect=false = annotations 행 0개.
+# 정상을 결함 유형에 넣으면 검출 프레임의 "박스 없음"과 이중 표현이 되고
+# ISO 6520-1 에 대응 코드가 없는 항목이 온톨로지에 섞인다.
+
+version: 1
+iso_standard: "ISO 6520-1"
+
+verdict_levels: [normal, defective]
+
+defect_types:
+  crack:
+    iso_code: "100"
+    iso_code_alt: []
+    name_ko: "균열"
+    name_en: "Crack"
+    train_class_id: 0
+  porosity:
+    iso_code: "2011"
+    iso_code_alt: ["2012"]      # 원본이 구형/균일분포 기공을 구분하지 않아 대표 2011
+    name_ko: "기공"
+    name_en: "Porosity"
+    train_class_id: 1
+  lack_of_fusion:
+    iso_code: "401"
+    iso_code_alt: []
+    name_ko: "융합불량"
+    name_en: "Lack of fusion"
+    train_class_id: 2
+  slag_inclusion:
+    iso_code: "301"
+    iso_code_alt: []
+    name_ko: "슬래그혼입"
+    name_en: "Slag inclusion"
+    train_class_id: 3
+  lack_of_penetration:
+    iso_code: "402"
+    iso_code_alt: []
+    name_ko: "용입불량"
+    name_en: "Lack of penetration"
+    train_class_id: 4           # RIAWELC 전용. AI허브 RT 에는 나타나지 않는다 (열린질문 Q5 확정)
+
+sources:
+  aihub71761:
+    label_field: null           # TODO probe_metadata.py 전수 확인 후 기입. 추측으로 채우지 않는다.
+    normal_labels: ["정상"]
+    mapping:
+      "균열": crack
+      "기공": porosity
+      "융합불량": lack_of_fusion
+      "슬래그혼입": slag_inclusion
+    unmapped_policy: fail       # 사상표에 없는 라벨이 나오면 즉시 실패. 조용히 버리지 않는다.
+  riawelc:
+    # 실물 폴더명은 이탈리아어 Difetto(결함)다. 2026-08-21 트랙 F 실물 검증으로 교체했다.
+    # 교체 전 값은 "CR"/"PO"/"LP" + normal "ND" 였고, 그런 폴더는 존재하지 않는다.
+    #
+    # ⚠ 번호 순서대로 짝지으면 틀린다. 공식 README 는 클래스를 "LP, PO, CR, ND" 순으로
+    #   나열하는데, 그 순서를 따라 Difetto1=LP 로 두면 **균열과 용입불량이 통째로 뒤바뀐다.**
+    #   그러면 eval_spaces.unseen_riawelc_common3(균열·기공·정상) 채점이 조용히 오염된다.
+    #
+    # 아래 매핑은 서로 독립인 두 방법이 일치한 결과다 (docs/데이터셋_실물확보.md 4-3):
+    #   (a) 분포 순위 대조 — 실측 장수 Difetto1 7,635 / Difetto2 6,320 / NoDifetto 6,000 /
+    #       Difetto4 4,452 의 순위가 문헌 보고 crack / porosity / no defect / LP 순위와 일치
+    #   (b) 방사선 형태 육안 판독 — Difetto1 갈라지며 꺾이는 어두운 선(균열),
+    #       Difetto2 둥근 반점과 군집(기공)
+    #
+    # Difetto3 은 결번이다. 원본에 그런 폴더가 없다 — 누락이 아니라 원저자가 안 쓴 번호다.
+    label_field: "dirname"      # 이미지 파일의 부모 디렉터리명이 클래스
+    normal_labels: ["NoDifetto"]
+    mapping:
+      "Difetto1": crack
+      "Difetto2": porosity
+      "Difetto4": lack_of_penetration
+    unmapped_policy: fail
+
+eval_spaces:
+  main_rt:
+    defect_types: [crack, porosity, lack_of_fusion, slag_inclusion]
+    excluded: [lack_of_penetration]
+    reason: "AI허브 RT 라벨 공간. 용입불량은 이 데이터셋에 존재하지 않는다."
+  unseen_riawelc_common3:
+    defect_types: [crack, porosity]     # + normal(L1) = 합쳐서 3
+    excluded: [lack_of_fusion, slag_inclusion, lack_of_penetration]
+    reason: "AI허브 RT ∩ RIAWELC 교집합만 채점. 나머지는 한쪽에 존재하지 않는다. (실험설계 8-4)"

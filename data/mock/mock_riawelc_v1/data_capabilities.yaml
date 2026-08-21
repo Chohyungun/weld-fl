@@ -1,0 +1,25 @@
+generated_at: '2026-08-17T00:00:00+09:00'
+snapshot_id: mock_riawelc_v1
+source: riawelc
+is_mock: true
+counts:
+  images_total: 300
+  with_thickness: 0
+  with_pixel_scale: 0
+  with_quality_level: 0
+capabilities:
+  localization: false
+  thickness_mm: false
+  pixel_scale: false
+  size_mm: false
+  verdict_mode: clause_only
+assumptions:
+  thickness_mm: null
+  px_per_mm: null
+  quality_level: null
+  rationale: null
+split_meta:
+  seed: 20260825
+  eval_folds: 5
+  val_folds: 10
+  dirichlet: null

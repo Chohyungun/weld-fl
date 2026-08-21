@@ -1,0 +1,208 @@
+{
+ "doc_id": "KR-RULES-P2",
+ "sha256": "46c4ee189f4adef29e42320f9301d8db577946ec96f893be9ff2f1683879552b",
+ "page_range": [
+  316,
+  336
+ ],
+ "docling_version": "2.120.1",
+ "tableformer_mode": "ACCURATE",
+ "ocr": false,
+ "elapsed_sec": 27.8,
+ "conversion_status": "ConversionStatus.SUCCESS",
+ "n_tables": 24,
+ "tables": [
+  {
+   "table_idx": 0,
+   "page": 317,
+   "rows": 5,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t000.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 1,
+   "page": 321,
+   "rows": 1,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t001.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 2,
+   "page": 322,
+   "rows": 5,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t002.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 3,
+   "page": 323,
+   "rows": 4,
+   "cols": 2,
+   "csv": "KR-RULES-P2_p316-336_t003.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 4,
+   "page": 324,
+   "rows": 4,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t004.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 5,
+   "page": 324,
+   "rows": 2,
+   "cols": 4,
+   "csv": "KR-RULES-P2_p316-336_t005.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 6,
+   "page": 325,
+   "rows": 5,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t006.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 7,
+   "page": 325,
+   "rows": 3,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t007.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 8,
+   "page": 325,
+   "rows": 3,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t008.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 9,
+   "page": 326,
+   "rows": 4,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t009.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 10,
+   "page": 326,
+   "rows": 6,
+   "cols": 2,
+   "csv": "KR-RULES-P2_p316-336_t010.csv",
+   "empty_cell_ratio": 0.167
+  },
+  {
+   "table_idx": 11,
+   "page": 327,
+   "rows": 6,
+   "cols": 2,
+   "csv": "KR-RULES-P2_p316-336_t011.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 12,
+   "page": 327,
+   "rows": 4,
+   "cols": 2,
+   "csv": "KR-RULES-P2_p316-336_t012.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 13,
+   "page": 327,
+   "rows": 2,
+   "cols": 8,
+   "csv": "KR-RULES-P2_p316-336_t013.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 14,
+   "page": 328,
+   "rows": 2,
+   "cols": 6,
+   "csv": "KR-RULES-P2_p316-336_t014.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 15,
+   "page": 328,
+   "rows": 1,
+   "cols": 5,
+   "csv": "KR-RULES-P2_p316-336_t015.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 16,
+   "page": 329,
+   "rows": 5,
+   "cols": 2,
+   "csv": "KR-RULES-P2_p316-336_t016.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 17,
+   "page": 329,
+   "rows": 1,
+   "cols": 6,
+   "csv": "KR-RULES-P2_p316-336_t017.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 18,
+   "page": 333,
+   "rows": 4,
+   "cols": 2,
+   "csv": "KR-RULES-P2_p316-336_t018.csv",
+   "empty_cell_ratio": 0.125
+  },
+  {
+   "table_idx": 19,
+   "page": 333,
+   "rows": 1,
+   "cols": 2,
+   "csv": "KR-RULES-P2_p316-336_t019.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 20,
+   "page": 334,
+   "rows": 4,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t020.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 21,
+   "page": 335,
+   "rows": 4,
+   "cols": 3,
+   "csv": "KR-RULES-P2_p316-336_t021.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 22,
+   "page": 335,
+   "rows": 3,
+   "cols": 9,
+   "csv": "KR-RULES-P2_p316-336_t022.csv",
+   "empty_cell_ratio": 0.0
+  },
+  {
+   "table_idx": 23,
+   "page": 336,
+   "rows": 2,
+   "cols": 7,
+   "csv": "KR-RULES-P2_p316-336_t023.csv",
+   "empty_cell_ratio": 0.0
+  }
+ ]
+}

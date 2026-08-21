@@ -1,0 +1,247 @@
+{
+  "assets": {
+    "b_qa": {
+      "asset": "b_qa",
+      "bucket_crosstab": [
+        {
+          "by_bucket": {
+            "n/a": {
+              "fail_reasons": {
+                "duplicate_question": 1,
+                "schema_violation": 1
+              },
+              "n_fail": 2,
+              "n_in": 79,
+              "n_pass": 77,
+              "pass_rate": 0.9747
+            }
+          },
+          "stage": "stage1_rule"
+        }
+      ],
+      "bucket_crosstab_note": "(b) QA 에는 난이도 구간(sample_bucket)이 없다 — 버킷은 허용치 대비 수치 위치(합격 / 불합격 / 경계 ±10%)로 정의되는데, QA 는 규정 구절에서 만든 질의응답이라 대조할 허용치가 없다. 따라서 n/a 한 칸이 정상이며 경계 사례 선택 편향 점검은 (c) 판정추론에만 적용된다 (게이트 #13 지시 사항).",
+      "configs_snapshot": null,
+      "date": "2026-08-21",
+      "git_commit": "unknown",
+      "limits_snapshot": null,
+      "manifest_snapshot": null,
+      "n_final": 77,
+      "n_generated": 79,
+      "notes": [],
+      "overall_pass_rate": 0.9747,
+      "passage_screen": {
+        "n_passages": 79,
+        "paid_standard_excluded": true
+      },
+      "pilot": true,
+      "quarantine": 0,
+      "stages": {
+        "stage1_rule": {
+          "fail_reasons": {
+            "duplicate_question": 1,
+            "schema_violation": 1
+          },
+          "n_fail": 2,
+          "n_in": 79,
+          "n_pass": 77,
+          "pass_rate": 0.9747
+        }
+      },
+      "version": "v0-pilot"
+    },
+    "c_reasoning": {
+      "asset": "c_reasoning",
+      "bucket_crosstab": [
+        {
+          "by_bucket": {
+            "boundary_eq": {
+              "fail_reasons": {
+                "extra_value": 2,
+                "missing_value": 8
+              },
+              "n_fail": 9,
+              "n_in": 17,
+              "n_pass": 8,
+              "pass_rate": 0.4706
+            },
+            "boundary_high": {
+              "fail_reasons": {
+                "extra_value": 4,
+                "missing_value": 5
+              },
+              "n_fail": 9,
+              "n_in": 30,
+              "n_pass": 21,
+              "pass_rate": 0.7
+            },
+            "boundary_low": {
+              "fail_reasons": {
+                "extra_value": 7,
+                "missing_value": 4
+              },
+              "n_fail": 10,
+              "n_in": 30,
+              "n_pass": 20,
+              "pass_rate": 0.6667
+            },
+            "fail": {
+              "fail_reasons": {
+                "changed_value": 18,
+                "extra_value": 44,
+                "missing_value": 31
+              },
+              "n_fail": 92,
+              "n_in": 180,
+              "n_pass": 88,
+              "pass_rate": 0.4889
+            },
+            "pass": {
+              "fail_reasons": {
+                "changed_value": 3,
+                "extra_value": 27,
+                "missing_value": 19
+              },
+              "n_fail": 48,
+              "n_in": 143,
+              "n_pass": 95,
+              "pass_rate": 0.6643
+            }
+          },
+          "stage": "stage0_numeric_lock"
+        },
+        {
+          "by_bucket": {
+            "boundary_eq": {
+              "fail_reasons": {},
+              "n_fail": 0,
+              "n_in": 8,
+              "n_pass": 8,
+              "pass_rate": 1.0
+            },
+            "boundary_high": {
+              "fail_reasons": {},
+              "n_fail": 0,
+              "n_in": 21,
+              "n_pass": 21,
+              "pass_rate": 1.0
+            },
+            "boundary_low": {
+              "fail_reasons": {},
+              "n_fail": 0,
+              "n_in": 20,
+              "n_pass": 20,
+              "pass_rate": 1.0
+            },
+            "fail": {
+              "fail_reasons": {},
+              "n_fail": 0,
+              "n_in": 88,
+              "n_pass": 88,
+              "pass_rate": 1.0
+            },
+            "pass": {
+              "fail_reasons": {},
+              "n_fail": 0,
+              "n_in": 95,
+              "n_pass": 95,
+              "pass_rate": 1.0
+            }
+          },
+          "stage": "stage1_rule"
+        }
+      ],
+      "bucket_crosstab_note": "난이도 구간별 폐기 분포 (게이트 #13 지시). 경계 사례(허용치 ±10%)를 의도적으로 20% 넣으므로, 그 구간이 다른 구간보다 많이 걸러지면 학습 데이터에 쉬운 것만 남는 선택 편향이 생긴다. 통과율 총계로는 보이지 않아 구간별로 나눠 기록한다. boundary_eq/low/high 는 경계 구간의 3층(정확 일치 / 하경계 / 상경계)이다.",
+      "configs_snapshot": null,
+      "date": "2026-08-21",
+      "git_commit": "unknown",
+      "limits_snapshot": null,
+      "manifest_snapshot": null,
+      "n_final": 232,
+      "n_generated": 400,
+      "notes": [],
+      "overall_pass_rate": 0.58,
+      "pilot": true,
+      "quarantine": 0,
+      "selection_bias": {
+        "boundary_share_after": 0.2112,
+        "boundary_share_before": 0.1925,
+        "boundary_share_delta_pp": 1.87,
+        "by_bucket": {
+          "boundary_eq": {
+            "after_n": 8,
+            "after_share": 0.0345,
+            "before_n": 17,
+            "before_share": 0.0425,
+            "share_delta_pp": -0.8
+          },
+          "boundary_high": {
+            "after_n": 21,
+            "after_share": 0.0905,
+            "before_n": 30,
+            "before_share": 0.075,
+            "share_delta_pp": 1.55
+          },
+          "boundary_low": {
+            "after_n": 20,
+            "after_share": 0.0862,
+            "before_n": 30,
+            "before_share": 0.075,
+            "share_delta_pp": 1.12
+          },
+          "fail": {
+            "after_n": 88,
+            "after_share": 0.3793,
+            "before_n": 180,
+            "before_share": 0.45,
+            "share_delta_pp": -7.07
+          },
+          "pass": {
+            "after_n": 95,
+            "after_share": 0.4095,
+            "before_n": 143,
+            "before_share": 0.3575,
+            "share_delta_pp": 5.2
+          }
+        }
+      },
+      "stages": {
+        "stage0_numeric_lock": {
+          "fail_reasons": {
+            "changed_value": 21,
+            "extra_value": 84,
+            "missing_value": 67
+          },
+          "n_fail": 168,
+          "n_in": 400,
+          "n_pass": 232,
+          "pass_rate": 0.58
+        },
+        "stage1_rule": {
+          "fail_reasons": {},
+          "n_fail": 0,
+          "n_in": 232,
+          "n_pass": 232,
+          "pass_rate": 1.0
+        }
+      },
+      "version": "v0-pilot"
+    }
+  },
+  "configs_snapshot": null,
+  "date": "2026-08-21",
+  "generation": {
+    "batch_size": 8,
+    "decoding": "greedy",
+    "max_new_tokens": 200,
+    "model": "Qwen/Qwen2.5-7B-Instruct"
+  },
+  "git_commit": "51ece29ab86ba3b32e2d38ea314ec2d6342d5e64",
+  "limits_snapshot": null,
+  "notes": [
+    "입력 limits_v0_pilot.csv 는 미검수 파일럿 전용이다 — 스냅샷 비대상.",
+    "생성 Qwen/Qwen2.5-7B-Instruct, greedy, 배치 8. 배치 크기는 재현 조건의 일부다 (실측: 배치가 다르면 같은 프롬프트도 다른 문장이 나온다).",
+    "2단계(다른 계열 Judge) 미실행 — 로컬에 다른 계열 모델이 없다. 자기검증 금지 조항상 Qwen 계열로 대체할 수 없다."
+  ],
+  "pilot": true,
+  "snapshot_eligible": false
+}

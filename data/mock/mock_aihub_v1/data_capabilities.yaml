@@ -1,0 +1,31 @@
+generated_at: '2026-08-17T00:00:00+09:00'
+snapshot_id: mock_aihub_v1
+source: aihub71761
+is_mock: true
+counts:
+  images_total: 1000
+  with_thickness: 0
+  with_pixel_scale: 0
+  with_quality_level: 0
+capabilities:
+  localization: true
+  thickness_mm: false
+  pixel_scale: false
+  size_mm: false
+  verdict_mode: clause_only
+assumptions:
+  thickness_mm: null
+  px_per_mm: null
+  quality_level: null
+  rationale: null
+split_meta:
+  seed: 20260825
+  eval_folds: 5
+  val_folds: 10
+  dirichlet:
+    concentration:
+    - 0.3333333333333333
+    - 0.16666666666666666
+    seed_used: 20260835
+    attempts: 8
+    c1_share: 0.7044

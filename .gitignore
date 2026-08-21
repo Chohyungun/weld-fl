@@ -1,0 +1,84 @@
+# --- 다른 프로젝트 실습 자료 (참고용, 산출물 아님) ---
+code/
+
+# --- 원본 컨텍스트 번들 (내용은 docs/ 로 전개 완료) ---
+pre_*.zip
+
+# --- 데이터: 원본 불변 원칙상 git 추적 대상 아님 ---
+data/raw/
+data/interim/
+data/processed/
+outputs/
+checkpoints/
+*.pt
+*.safetensors
+
+# --- 코퍼스 원문: 재배포 조건 미확인이라 커밋하지 않는다 (스펙 §3-1) ---
+# 해시·URL·접근일은 corpus/parse/sources.yaml 에 기록되어 추적된다
+corpus/parse/raw/
+!corpus/parse/raw/RAW.sha256
+
+# --- 실험 추적 ---
+mlruns/
+mlartifacts/
+
+# --- 대용량/이진 ---
+*.zip
+*.rar
+*.tar.gz
+*.parquet
+*.faiss
+
+# 단, 매니페스트와 스냅샷 해시는 추적한다 (재현성의 핵심)
+!data/**/manifest.csv
+!data/**/annotations.csv
+!data/**/data_capabilities.yaml
+!**/SNAPSHOT.sha256
+
+# --- 개인 설정 ---
+CLAUDE.local.md
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# --- 규정 원문 파싱 산출물 (재배포 회피) ---
+# 무료 공개 문서라도 '열람·이용'과 '재배포'는 다른 권리다.
+# 저장소가 공개 전환될 수 있으므로 원문·표 덤프는 추적하지 않는다.
+# 재현에 필요한 것은 corpus/parse/sources.yaml (출처·판본·페이지·sha256) 과
+# 파싱 스크립트, 그리고 우리 자체 측정치인 meta_*.json 이다.
+# 최종 산출물 limits.csv 는 파생물(허용치 수치·조항 번호 = 사실 정보)이므로 추적한다.
+corpus/parse/survey/**
+!corpus/parse/survey/
+!corpus/parse/survey/*/
+!corpus/parse/survey/**/meta_*.json
+# (해제 완료) survey_textscan.py 는 결함 명칭을 configs/label_map.yaml 에서 읽도록
+# 고쳐 불변조건(라벨 문자열 하드코딩 금지)을 충족한다. SOURCES.md 의 재현 절차가
+# 이 스크립트를 참조하므로 추적한다.
+
+# --- 공개 저장소 비공개 문서 ---
+# 회의록에는 팀 내부 논의(자원 확보 경위·자체 평가·외부 컨택 계획)가 있다.
+# 저장소가 공개이므로 추적하지 않는다. 로컬·공유 드라이브에는 그대로 둔다.
+docs/회의록_*.md
+docs/액션아이템.md
+
+# --- 로컬 운영 규칙 (공개 저장소 비추적) ---
+# 프로젝트 불변조건은 docs/개발규약.md 가 정본이다.
+CLAUDE.md
+CLAUDE.local.md
+
+# --- 내부 작업지시서 (공개 저장소 비추적) ---
+# 배분 내역이고, 결정 내용은 스펙과 게이트 기록에 반영돼 있다.
+docs/dev_log/**/dispatch_*.md
+
+# --- 옛 판본 보관 (공개 저장소 비추적) ---
+docs/archive/CLAUDE_구판_260817.md

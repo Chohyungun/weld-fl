@@ -1,0 +1,19 @@
+# 개행을 LF 로 고정한다. win32 CRLF 자동 변환은 manifest·SNAPSHOT.sha256 의
+# 바이트 재현성을 깨뜨린다 (스펙 10_spec_A §6-9 manifest 바이트 규격).
+* text=auto eol=lf
+
+*.csv   text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.json  text eol=lf
+*.jsonl text eol=lf
+*.md    text eol=lf
+*.py    text eol=lf
+*.toml  text eol=lf
+
+# 바이너리 — 변환 금지
+*.png   binary
+*.jpg   binary
+*.pt    binary
+*.parquet binary
+*.faiss binary

@@ -1,0 +1,70 @@
+# mock 스냅샷 생성 프로파일 — 트랙 C·D 선행 개발용 (열린질문 Q8, 게이트 #4 승인)
+#
+# **실데이터가 아니다.** 이미지 파일도 없다. 목적은 계약 #2 스키마를 준수하는 매니페스트를
+# 지금 제공해 C·D 가 AI허브 승인(8/25)을 기다리지 않게 하는 것이다.
+# 클래스 비율은 docs/실험설계.md 3-2 의 실측 분포를 근사한다.
+#
+# 라벨 키는 configs/label_map.yaml 의 L2 키를 참조한다. `__normal__` 은 라벨이 아니라
+# "결함 없음"을 뜻하는 예약어다(정상은 L2 에 없다 — 계층 분리).
+
+seed: 20260825
+
+profiles:
+  # 주 실험 경로 — 폴리곤 라벨, 위치 지표 산출 가능
+  mock_aihub_v1:
+    source: aihub71761
+    modality: RT
+    label_type: polygon
+    has_localization: true
+    verdict_mode: clause_only        # 안전 기본값 (두께·스케일 미확인)
+    ingest_version: "aihub-mock-v1"
+    materials:
+      ST:
+        n_images: 850
+        width_px: 1280
+        height_px: 720
+        class_weights:
+          __normal__: 0.438
+          porosity: 0.451
+          crack: 0.038
+          lack_of_fusion: 0.054
+          slag_inclusion: 0.019
+      AL:
+        n_images: 150
+        width_px: 1280
+        height_px: 720
+        class_weights:
+          __normal__: 0.524
+          porosity: 0.295
+          crack: 0.033
+          lack_of_fusion: 0.033
+          slag_inclusion: 0.115
+
+  # 백업 경로 — 분류 패치, 위치 라벨 없음. N1 결측(has_localization=false) 검증용
+  mock_riawelc_v1:
+    source: riawelc
+    modality: RT
+    label_type: classification
+    has_localization: false
+    verdict_mode: clause_only
+    ingest_version: "riawelc-mock-v1"
+    materials:
+      UNK:
+        n_images: 300
+        width_px: 224
+        height_px: 224
+        class_weights:
+          __normal__: 0.25
+          porosity: 0.25
+          crack: 0.25
+          lack_of_penetration: 0.25
+
+# 묶음(중복) 구조 — 같은 용접부 연속 촬영을 흉내낸다
+grouping:
+  singleton_ratio: 0.80             # 나머지는 2~4장 묶음
+  max_group_size: 4
+
+split:
+  eval_folds: 5                     # fold 0 = 글로벌 평가셋 20%
+  val_folds: 10                     # 클라이언트 내 fold 0 = val 10%
+  judgment_subset_ratio: 0.25       # 평가셋 중 판정문 채점 표본 비율 (실제는 2000/14000)
